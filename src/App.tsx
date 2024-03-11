@@ -7,12 +7,13 @@ import { Hero } from './components/Hero';
 import { LibraryServices } from './components/LibraryServices';
 import { Footer } from './components/Footer';
 import { Homepage } from './components/Homepage';
+import { SearchBooksPage } from './components/SearchBooksPage';
 
 export const  App=() =>{
   return (
     <div>
       <Navbar/>
-      <Homepage/>
+      <SearchBooksPage/>
       <Footer/>
     </div>
      
