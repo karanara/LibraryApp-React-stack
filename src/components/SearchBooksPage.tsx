@@ -13,6 +13,7 @@ export const SearchBooksPage = () =>{
     const[totalPages,setTotalPages]= useState(0);
     const[search,setSearch] = useState('');
     const[searchUrl,setSearchUrl]= useState('');
+    const [categorySelection,setCategorySelection] = useState('Book Category');
     useEffect (()=>{
         const fetchBooks = async()=>{
           const baseUrl : string = "http://localhost:8080/api/books";
@@ -75,6 +76,20 @@ export const SearchBooksPage = () =>{
         setSearchUrl(`/search/findByTitleContaining?title=${search}&page=0&size=${booksPerPage}`)
     }
   }
+  const categoryField = (value:string) =>{
+    if(
+        value.toLowerCase() === 'fe' ||
+        value.toLowerCase() === 'be' ||
+        value.toLowerCase() === 'data'||
+        value.toLowerCase() === 'devops'
+    ){
+        setCategorySelection(value);
+        setSearchUrl(`/search/findByCategory?category=${value}&page=0&size=${booksPerPage}`)
+    }else{
+        setCategorySelection("All");
+        setSearchUrl(`?page=0&size=${booksPerPage}`)
+    }
+  }
   const indexOfLastBook: number = currentPage * booksPerPage;
   const indexOfFirstBook: number = indexOfLastBook-booksPerPage;
   let lastItem = booksPerPage * currentPage <= totalAmountofBooks? booksPerPage * currentPage : totalAmountofBooks;
@@ -95,41 +110,43 @@ export const SearchBooksPage = () =>{
                             </button>
                         </div>
                     </div>
-                    <div className="col-4">
-                        <div className="dropdown">
-                            <button className="btn btn-secondary dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                Category
-                            </button>
+                    <div className='col-4'>
+                            <div className='dropdown'>
+                                <button className='btn btn-secondary dropdown-toggle' type='button'
+                                    id='dropdownMenuButton1' data-bs-toggle='dropdown'
+                                    aria-expanded='false'>
+                                    {categorySelection}
+                                </button>
+                                <ul className='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
+                                    <li onClick={() => categoryField('All')}>
+                                        <a className='dropdown-item' href='#'>
+                                            All
+                                        </a>
+                                    </li>
+                                    <li onClick={() => categoryField('FE')}>
+                                        <a className='dropdown-item' href='#'>
+                                            Front End
+                                        </a>
+                                    </li>
+                                    <li onClick={() => categoryField('BE')}>
+                                        <a className='dropdown-item' href='#'>
+                                            Back End
+                                        </a>
+                                    </li>
+                                    <li onClick={() => categoryField('Data')}>
+                                        <a className='dropdown-item' href='#'>
+                                            Data
+                                        </a>
+                                    </li>
+                                    <li onClick={() => categoryField('DevOps')}>
+                                        <a className='dropdown-item' href='#'>
+                                            DevOps
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li>
-                                <a className="dropdwon-ite," href="">
-                                    All
-                                </a>
-                            </li>
-                            <li>
-                                <a className="dropdwon-ite," href="">
-                                    Front-End
-                                </a>
-                            </li>
-                            <li>
-                                <a className="dropdwon-ite," href="">
-                                    Back-End
-                                </a>
-                            </li>
-                            <li>
-                                <a className="dropdwon-ite," href="">
-                                    Data
-                                </a>
-                            </li>
-                            <li>
-                                <a className="dropdwon-ite," href="">
-                                    Devops
-                                </a>
-                            </li>
-                        </ul>
                     </div>
-                </div>
                 {totalAmountofBooks > 0 ?
                         <>
                             <div className='mt-3'>
