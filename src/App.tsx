@@ -9,6 +9,7 @@ import { Footer } from './components/Footer';
 import { Homepage } from './components/Homepage';
 import { SearchBooksPage } from './components/SearchBooksPage';
 import { Redirect, Route,Switch } from 'react-router-dom';
+import { BookCheckoutPage } from './components/BookCheckoutPage/BookCheckoutPage';
 
 export const  App=() =>{
   return (
@@ -24,6 +25,9 @@ export const  App=() =>{
       </Route>
       <Route path='/search'>
       <SearchBooksPage/>
+      </Route>
+      <Route path='/checkout/:bookid'>
+        <BookCheckoutPage/>
       </Route>
       </Switch>
       </div>
