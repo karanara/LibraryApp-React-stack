@@ -5,12 +5,17 @@ import { StarReview } from "../Utils/StarReview";
 import { CheckOutAndReviewBox } from "./CheckOutAndReviewBox";
 import ReviewModel from "../models/ReviewModel";
 import { LatestReviews } from "./LatestReviews";
+import { useOktaAuth } from "@okta/okta-react";
 
 export const BookCheckoutPage = () =>{
+    const {authState} = useOktaAuth();
    const [book,setBook] = useState<BookModel>();
    const [isLoadingBook,setIsLoadingBook] = useState(true);
    const[httpError,setHttpError] = useState(null);
    const bookId = (window.location.pathname).split('/')[2];
+   //checkout state
+   const [currentLoansCount,setCurrentLoansCount] = useState(0);
+   const [isLoadingCurrentLoans,setIsLoadingCurrentLoans] = useState(true);
    //Review State
    const [reviews,setReviews] = useState<ReviewModel[]>([]);
    const [totalStars,setTotalStars]= useState(0);
@@ -78,7 +83,32 @@ useEffect(()=>{
             setHttpError(error.message);
         })
 },[]);
-if(isLoadingBook || isLoadingReview){
+useEffect(()=>{
+    const fetchUserCurrentLoansCount = async ()=>{
+        if(authState && authState.isAuthenticated){
+            const url ='http://localhost:8080/api/books/secure/currentLoans/count';
+            const requestOptions = {
+                method :'GET',
+                headers :{
+                    Authorization :`Bearer ${authState.accessToken?.accessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+            const currentLoansCountResponse = await fetch(url,requestOptions);
+            if(!currentLoansCountResponse.ok){
+                throw new Error('Something went wrong');
+            }
+            const currentLoansCountResponseJson = await currentLoansCountResponse.json();
+            setCurrentLoansCount(currentLoansCountResponseJson);
+        }
+        setIsLoadingCurrentLoans(false);
+    }
+    fetchUserCurrentLoansCount().catch((error:any)=>{
+        setIsLoadingCurrentLoans(false);
+        setHttpError(error.message);
+    })
+})
+if(isLoadingBook || isLoadingReview || isLoadingCurrentLoans){
     return (
         <div className="container m-5">
             <p>Loading....</p>
@@ -110,7 +140,7 @@ if(httpError){
                               <StarReview rating={totalStars} size={32}/>
                           </div>
                     </div>
-                    <CheckOutAndReviewBox book={book} mobile={false}/>
+                    <CheckOutAndReviewBox book={book} mobile={false} currentLoansCount={currentLoansCount}/>
                 </div>
                 <hr/>
                 <LatestReviews reviews={reviews} bookId={book?.id} mobile={false} />
@@ -130,7 +160,7 @@ if(httpError){
                         <StarReview rating={totalStars} size={32}/>
                     </div>
                 </div>
-                <CheckOutAndReviewBox book={book} mobile={false}/>
+                <CheckOutAndReviewBox book={book} mobile={false} currentLoansCount={currentLoansCount}/>
                   <hr/>
                   <LatestReviews reviews={reviews} bookId={book?.id} mobile={true} />
             </div>

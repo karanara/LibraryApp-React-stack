@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import BookModel from "../models/BookModel";
 
-export const CheckOutAndReviewBox: React.FC<{book : BookModel | undefined, mobile : boolean}>=(props)=>{
+export const CheckOutAndReviewBox: React.FC<{book : BookModel | undefined, mobile : boolean,currentLoansCount: number}>=(props)=>{
     return (
         <div className={props.mobile ? 'card d-flex mt-5': 'card col-3 container d-flex mb-5'}>
             <div className="card-boy-container">
                 <div className="mt-3">
                     <p>
-                        <b>0/5 </b>
+                        <b>{props.currentLoansCount}/5 </b>
                         books checked out
                     </p>
                     <hr/>
@@ -26,7 +26,7 @@ export const CheckOutAndReviewBox: React.FC<{book : BookModel | undefined, mobil
                         </p>
                     </div>
                 </div>
-                <Link to='/#' className="btn btn-success btn-lg">Sign In</Link>
+                <Link to='/login' className="btn btn-success btn-lg">Sign In</Link>
                 <hr/>
                 <p className="mt-3">
                     This number can change until placing order has been complete.
